@@ -4,6 +4,7 @@
   <li><%= link_to current_user.name, edit_user_registration_path %></li>
   <%= link_to('Logout', destroy_user_session_path, method: :delete) %>    
   </p>
+  
   <table>
     <tbody>
       <% load_buildings.each_with_index  do |building, index| %>
@@ -19,10 +20,14 @@
     </tbody>
   </table>
 
+  <p> <h3> <%= "Current Page:" + current_page.to_s %> </h3> </p>
+
   <%= link_to "<button>Previous Page</button>".html_safe, "/?page=" + (current_page - 1).to_s %>
   <%= link_to "<button>Page 1</button>".html_safe, "/?page=1"%>
   <%= link_to ("<button>Page " + total_pages.to_s +  "</button>").html_safe, "/?page=" + total_pages.to_s %>
   <%= link_to "<button>Next Page</button>".html_safe, "/?page=" + (current_page + 1).to_s %>
+
+  <%= link_to "Favorites", "/favorites" %>
 
 <% else %>
   <%= redirect_to_login %>
@@ -37,17 +42,25 @@
       favorites.push(buildings[favorite_index]);
       set_favorites();
     }
-
-    console.log(favorites)
   }
 
   function format_buildings() {
-    const buildings = '<%= load_buildings %>';
-    return JSON.parse(buildings.replace(/&quot;/g,'"').replace(/&gt;/g,'').replace(/=/g,':'))
+    var buildings = '<%= load_buildings %>';
+    buildings = buildings.replace(/&quot;/g,'"').replace(/&gt;/g,'').replace(/=/g,':');
+    
+    return JSON.parse(buildings);;
   }
 
   function verify_exist_favorite(favorite_index) {
-    return favorites.includes(buildings[favorite_index]);
+    building = buildings[favorite_index];
+    
+    for (var favorite of favorites) {
+      if (building["id"] == favorite["id"]) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   function get_favorites() {
