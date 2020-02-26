@@ -11,7 +11,17 @@ class BuildingsController < ApplicationController
   end
 
   helper_method :load_buildings
-  def load_buildings(page = 1)
-    @buildings_service.load_page(page)
+  def load_buildings
+    @buildings_service.load_page(params[:page])
+  end
+
+  helper_method :current_page
+  def current_page
+    @buildings_service.current_page
+  end
+
+  helper_method :total_pages
+  def total_pages
+    @buildings_service.total_pages
   end
 end
