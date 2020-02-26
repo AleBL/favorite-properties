@@ -1,0 +1,66 @@
+<% if user_signed_in? %>
+  <p>
+  <li><%= link_to current_user.email, edit_user_registration_path %></li>
+  <li><%= link_to current_user.name, edit_user_registration_path %></li>
+  <%= link_to('Logout', destroy_user_session_path, method: :delete) %>    
+  </p>
+  <table>
+    <tbody>
+      <% load_buildings.each_with_index  do |building, index| %>
+        <tr style="display: inline-grid; width: 250px;border-style: solid;height: 250px;margin: 5px" >
+          <td> <%= building["name"] %> </td>
+          <td> <%= number_to_currency(building["min_price"], unit: "R$", separator: ",", delimiter: ".") %> </td>
+          <td> <%= building["address"]["city"] + " - " + building["address"]["state"] %> </td>
+          <td> <%= image_tag(building["default_image"]["200x140"]) %> </td>
+          <td> <input type="button" value="Add Favorite"
+            onclick='add_favorite(<%= index %>);' type="submit"/> </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <%= link_to "<button>Previous Page</button>".html_safe, "/?page=" + (current_page - 1).to_s %>
+  <%= link_to "<button>Page 1</button>".html_safe, "/?page=1"%>
+  <%= link_to ("<button>Page " + total_pages.to_s +  "</button>").html_safe, "/?page=" + total_pages.to_s %>
+  <%= link_to "<button>Next Page</button>".html_safe, "/?page=" + (current_page + 1).to_s %>
+
+<% else %>
+  <%= redirect_to_login %>
+<% end %>
+
+<script>
+  var favorites = get_favorites();
+  var buildings = format_buildings();
+
+  function add_favorite(favorite_index) {
+    if (!verify_exist_favorite(favorite_index)) {
+      favorites.push(buildings[favorite_index]);
+      set_favorites();
+    }
+
+    console.log(favorites)
+  }
+
+  function format_buildings() {
+    const buildings = '<%= load_buildings %>';
+    return JSON.parse(buildings.replace(/&quot;/g,'"').replace(/&gt;/g,'').replace(/=/g,':'))
+  }
+
+  function verify_exist_favorite(favorite_index) {
+    return favorites.includes(buildings[favorite_index]);
+  }
+
+  function get_favorites() {
+    favorites = JSON.parse(localStorage.getItem('favorites'));
+
+    if (Array.isArray(favorites)) {
+      return favorites;
+    }
+
+    return [];
+  }
+
+  function set_favorites() {
+    localStorage.setItem('favorites', JSON.stringify(favorites));
+  }
+</script>
