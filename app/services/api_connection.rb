@@ -5,10 +5,10 @@ require 'httparty'
 class ApiConnection
   include HTTParty
 
-  def response_buildings(page = 1)
+  def self.response_buildings(page = 1)
     bearer_token = "<ADD BEARER TOKEN HERE>"
 
-    response = HTTParty.get(
+    HTTParty.get(
       "https://www.orulo.com.br/api/v2/buildings", 
       headers: {
         "Authorization" => "Bearer #{bearer_token}",
