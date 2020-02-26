@@ -1,0 +1,72 @@
+<% if user_signed_in? %>
+  <p>
+  <li><%= link_to current_user.email, edit_user_registration_path %></li>
+  <li><%= link_to current_user.name, edit_user_registration_path %></li>
+  <%= link_to('Logout', destroy_user_session_path, method: :delete) %>    
+  </p>
+  
+  <table>
+    <tbody>
+
+    </tbody>
+  </table>
+
+<% else %>
+  <%= redirect_to_login %>
+<% end %>
+
+<script>
+
+  tableCreate();
+
+  function get_favorites() {
+    favorites = JSON.parse(localStorage.getItem('favorites'));
+
+    if (Array.isArray(favorites)) {
+      return favorites;
+    }
+
+    return [];
+  }
+
+  function tableCreate() {
+    var favorites = get_favorites();
+
+    var formatter = new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+    });
+
+    var tbody = document.getElementsByTagName('tbody')[0];
+
+    for (var i = 0; i < favorites.length; i++) {
+      var tr = document.createElement('tr');
+      tr.style = "display: inline-grid; width: 250px;border-style: solid;height: 250px;margin: 5px";
+
+      var td = document.createElement('td');
+      td.appendChild(document.createTextNode(favorites[i]["name"]));
+      tr.appendChild(td);
+
+      td = document.createElement('td');
+      min_price = formatter.format(favorites[i]["min_price"]);
+      td.appendChild(document.createTextNode(min_price));
+      tr.appendChild(td);
+
+      td = document.createElement('td');
+      adress = favorites[i]["address"]["city"] + " - " + favorites[i]["address"]["state"]
+      td.appendChild(document.createTextNode(adress));
+      tr.appendChild(td);
+
+      td = document.createElement('td');
+      img = document.createElement('img');
+      img.setAttribute('src', favorites[i]["default_image"]["200x140"]);
+      td.appendChild(img);
+      tr.appendChild(td);
+
+      tbody.appendChild(tr);
+    }
+    // tbl.appendChild(tbody);
+    // body.appendChild(tbl)
+  }
+
+</script>
