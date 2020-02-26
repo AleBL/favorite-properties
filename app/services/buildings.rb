@@ -1,24 +1,28 @@
 # frozen_string_literal: true
 
 class Buildings
-  attr_reader :total_pages, :atual_page, :buildings
+  attr_reader :total_pages, :current_page, :buildings
 
   def initialize
-    api_connection = ApiConnection.new
-    response_buildings = api_connection.response_buildings
-
-    @buildings ||= response_buildings["buildings"]
-    @atual_page ||= response_buildings["page"]
-    @total_pages ||= response_buildings["total_pages"]
+    load_page
   end
 
   def load_page(page = 1)
-    return @buildings if atual_page == page
+    begin
+      page = page.to_i if page.class == String
 
-    api_connection = ApiConnection.new
-    response_buildings = api_connection.response_buildings(page)
+      page = 1 if page <= 0 || page > @total_pages
+    rescue Exception => e
+      page = 1
+      puts e
+    end
 
-    @atual_page = response_buildings["page"]
-    @buildings = response_buildings["buildings"]
+    return @buildings if @current_page == page
+
+    response_buildings = ApiConnection.response_buildings(page)
+
+    @total_pages = response_buildings['total_pages']
+    @current_page = response_buildings['page']
+    @buildings = response_buildings['buildings']
   end
 end
