@@ -1,10 +1,9 @@
+<%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+
 <% if user_signed_in? %>
-  <p>
-  <li><%= link_to current_user.email, edit_user_registration_path %></li>
-  <li><%= link_to current_user.name, edit_user_registration_path %></li>
-  <%= link_to('Logout', destroy_user_session_path, method: :delete) %>    
-  </p>
-  
+  <%= render :partial => 'buildings/menu' %>
+
   <table>
     <tbody>
 
@@ -41,7 +40,7 @@
 
     for (var i = 0; i < favorites.length; i++) {
       var tr = document.createElement('tr');
-      tr.style = "display: inline-grid; width: 250px;border-style: solid;height: 250px;margin: 5px";
+      tr.setAttribute('class', 'buildings');
 
       var td = document.createElement('td');
       td.appendChild(document.createTextNode(favorites[i]["name"]));
@@ -53,8 +52,8 @@
       tr.appendChild(td);
 
       td = document.createElement('td');
-      adress = favorites[i]["address"]["city"] + " - " + favorites[i]["address"]["state"]
-      td.appendChild(document.createTextNode(adress));
+      address = favorites[i]["address"]["city"] + " - " + favorites[i]["address"]["state"]
+      td.appendChild(document.createTextNode(address));
       tr.appendChild(td);
 
       td = document.createElement('td');
@@ -65,8 +64,6 @@
 
       tbody.appendChild(tr);
     }
-    // tbl.appendChild(tbody);
-    // body.appendChild(tbl)
   }
 
 </script>

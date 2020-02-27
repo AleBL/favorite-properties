@@ -1,20 +1,19 @@
+<%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+
 <% if user_signed_in? %>
-  <p>
-  <li><%= link_to current_user.email, edit_user_registration_path %></li>
-  <li><%= link_to current_user.name, edit_user_registration_path %></li>
-  <%= link_to('Logout', destroy_user_session_path, method: :delete) %>    
-  </p>
+  <%= render :partial => 'menu' %>
   
   <table>
     <tbody>
       <% load_buildings.each_with_index  do |building, index| %>
-        <tr style="display: inline-grid; width: 250px;border-style: solid;height: 250px;margin: 5px" >
+        <tr class="buildings" >
           <td> <%= building["name"] %> </td>
-          <td> <%= number_to_currency(building["min_price"], unit: "R$", separator: ",", delimiter: ".") %> </td>
+          <td> <%= number_to_currency(building["min_price"], unit: "R$ ", separator: ",", delimiter: ".") %> </td>
           <td> <%= building["address"]["city"] + " - " + building["address"]["state"] %> </td>
           <td> <%= image_tag(building["default_image"]["200x140"]) %> </td>
-          <td> <input type="button" value="Add Favorite"
-            onclick='add_favorite(<%= index %>);' type="submit"/> </td>
+          <td> <input id=<%= index %> class='flash-container btn btn-favorite' type="button" value="&#9829"
+                  onclick='add_favorite(<%= index %>);' type="submit"/></td>
         </tr>
       <% end %>
     </tbody>
@@ -22,12 +21,10 @@
 
   <p> <h3> <%= "Current Page:" + current_page.to_s %> </h3> </p>
 
-  <%= link_to "<button>Previous Page</button>".html_safe, "/?page=" + (current_page - 1).to_s %>
-  <%= link_to "<button>Page 1</button>".html_safe, "/?page=1"%>
-  <%= link_to ("<button>Page " + total_pages.to_s +  "</button>").html_safe, "/?page=" + total_pages.to_s %>
-  <%= link_to "<button>Next Page</button>".html_safe, "/?page=" + (current_page + 1).to_s %>
-
-  <%= link_to "Favorites", "/favorites" %>
+  <a href="/?page=1"><button class="btn btn-primary"><< First Page</button></a>
+  <a href="<%= '/?page=' + (current_page - 1).to_s %>"><button class="btn btn-primary">< Previous Page</button></a>
+  <a href="<%= '/?page=' + (current_page + 1).to_s %>"><button class="btn btn-primary">Next Page ></button></a>
+  <a href="<%= '/?page=' + total_pages.to_s %>"><button class="btn btn-primary">Last Page >> </button></a>
 
 <% else %>
   <%= redirect_to_login %>
@@ -75,5 +72,17 @@
 
   function set_favorites() {
     localStorage.setItem('favorites', JSON.stringify(favorites));
+  }
+
+  function message_set_favorite() {
+    Flash = {}
+    Flash.success = function(msg = 'Favorite Saved', time){
+      time = 1000;
+      $('#flash-container')[0].innerHTML = "<div class='success message'>" + msg + "</div>";
+      $('#flash-container').addClass('showing');
+      setTimeout(function(){
+        $('#flash-container').removeClass('showing');
+      }, time);
+    };
   }
 </script>
