@@ -1,0 +1,15 @@
+<p>
+  <nav class="dropdownmenu">
+    <ul>
+      <li><a><i class="fa fa-user"></i> User</a>
+        <ul id="submenu">
+          <li><a><%= current_user.name %></a></li>
+          <li><%= link_to "Edit", edit_user_registration_path %></li>
+          <li><%= link_to('Logout', destroy_user_session_path, method: :delete) %></li>
+        </ul>
+      </li>
+      <li><%= link_to "❤ Favorites", "/favorites" %></li>
+      <li><a href="/"><i class="fa fa-building"></i> Properties</a></li>
+    </ul>
+  </nav>
+</p>
